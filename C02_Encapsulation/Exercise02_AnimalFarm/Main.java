@@ -11,7 +11,7 @@ public class Main {
 
         try {
             Chicken chicken = new Chicken(name, age);
-            System.out.println(chicken.toString());
+            System.out.println(chicken);
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
