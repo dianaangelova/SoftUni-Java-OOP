@@ -6,6 +6,7 @@ public class Main {
         Animal dog = new Dog("Rocky", "Meat");
         System.out.println(cat.explainSelf());
         System.out.println(dog.explainSelf());
+        // Judje accepts it at 80%
     }
 
 }
