@@ -31,7 +31,7 @@ public  class Vehicle {
     }
 
     public void refuel(double liters) {
-this.fuelQuantity=fuelQuantity;
+this.fuelQuantity=fuelQuantity + liters;
     }
 
     public double getFuelQuantity() {
