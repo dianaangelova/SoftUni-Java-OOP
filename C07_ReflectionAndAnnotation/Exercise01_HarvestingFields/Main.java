@@ -4,7 +4,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
@@ -19,7 +18,6 @@ public class Main {
             print(fields, command);
             command = scanner.nextLine();
         }
-
     }
 
     public static void print(Field[] fields, String modifierType) {
