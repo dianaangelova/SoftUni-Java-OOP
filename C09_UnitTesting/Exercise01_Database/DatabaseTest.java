@@ -1,16 +1,24 @@
 package C09_UnitTesting.Exercise01_Database;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import javax.naming.OperationNotSupportedException;
 
 public class DatabaseTest {
+    private Database database;
+    private static final Integer[] NUMBERS = {5, 8, 21, 68, 81, -5};
+
+    @Before
+    public void prepare() throws OperationNotSupportedException {
+        Integer[] numbers = NUMBERS;
+        database = new Database(numbers);
+    }
+
 
     @Test
     public void test_CreateDatabase() throws OperationNotSupportedException {
-        Integer[] numbers = {5, 8, 21, 68, 81, -5};
-        Database database = new Database(5, 8, 21, 68, 81, -5);
         Integer[] dbElements = database.getElements();
         Assert.assertEquals(6, dbElements.length);
 
@@ -18,13 +26,13 @@ public class DatabaseTest {
 //            Assert.assertEquals(numbers[i], dbElements[i]);
 //        }
 
-        Assert.assertArrayEquals(numbers, dbElements);
+        Assert.assertArrayEquals(NUMBERS, dbElements);
     }
 
 
     @Test(expected = OperationNotSupportedException.class)
     public void test_ConstructorWithLessThanOneArgument() throws OperationNotSupportedException {
-        Integer [] emptyArray = new Integer[0];
+        Integer[] emptyArray = new Integer[0];
         new Database(emptyArray);
     }
 
@@ -35,19 +43,42 @@ public class DatabaseTest {
         new Database(bigArray);
     }
 
+    @Test(expected = OperationNotSupportedException.class)
+    public void test_AddNullElementToDatabase() throws OperationNotSupportedException {
+        database.add(null);
+    }
 
-//    @Test
-//    public void test_AddElementToDatabase() throws OperationNotSupportedException {
-//        Database database = new Database(1, 2, 3);
-//        Integer[] databaseElements = database.getElements();
-//        int numberElements = databaseElements.length;
-//        System.out.println("Before:" + numberElements);
-//        database.add(4);
-//        int actualCount = databaseElements.length;
-//        System.out.println("After:" + numberElements);
-//
-//        Assert.assertEquals(3, actualCount);
-//    }
+    @Test
+    public void test_AddSuccessElementToDatabase() throws OperationNotSupportedException {
+        int initialSize = database.getElements().length;
+        database.add(12);
+        Integer[] dbElements = database.getElements();
+        int lastElementFromDB = dbElements[dbElements.length - 1];
 
+        Assert.assertEquals(12, lastElementFromDB);
+        Assert.assertEquals(NUMBERS.length + 1, database.getElements().length);
+    }
+
+
+    @Test
+    public void test_RemoveSuccess() throws OperationNotSupportedException {
+        int initialSize = database.getElements().length;
+        database.remove();
+        Integer[] currentElements = database.getElements();
+
+        Assert.assertEquals(initialSize - 1, currentElements.length);
+
+        int secondToLastBeforeDelete = NUMBERS[NUMBERS.length - 2];
+        int lastElementAfterDelete = currentElements[currentElements.length - 1];
+        Assert.assertEquals(secondToLastBeforeDelete, lastElementAfterDelete);
+    }
+
+    @Test(expected = OperationNotSupportedException.class)
+    public void test_ShouldThrowForEmptyDatabase() throws OperationNotSupportedException {
+        for (int i = 0; i < NUMBERS.length; i++) {
+            database.remove();
+        }
+        database.remove();
+    }
 
 }
