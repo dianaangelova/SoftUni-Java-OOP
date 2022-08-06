@@ -68,7 +68,7 @@ public class ChainblockImpl implements Chainblock {
         List<Transaction> filteredTransactionList = new ArrayList<>();
         getByTransactionStatus(status).forEach(filteredTransactionList::add);
         return filteredTransactionList.stream()
-                .map(tr->tr.getFrom())
+                .map(tr -> tr.getFrom())
                 .collect(Collectors.toList());
     }
 
@@ -77,7 +77,7 @@ public class ChainblockImpl implements Chainblock {
         getByTransactionStatus(status).forEach(filteredTransactionList::add);
         List<String> receiversList = new ArrayList<>();
         return filteredTransactionList.stream()
-                .map(tr->tr.getTo())
+                .map(tr -> tr.getTo())
                 .collect(Collectors.toList());
     }
 
@@ -114,16 +114,14 @@ public class ChainblockImpl implements Chainblock {
 
     public Iterable<Transaction> getByTransactionStatusAndMaximumAmount(TransactionStatus status, double amount) {
         return transactionMap.values().stream()
-                .filter(tr -> tr.getStatus().equals(status))
-                .filter(tr -> tr.getAmount() <= amount)
+                .filter(tr -> tr.getStatus().equals(status) && tr.getAmount() <= amount)
                 .sorted(Comparator.comparing(Transaction::getAmount).reversed())
                 .collect(Collectors.toList());
     }
 
     public Iterable<Transaction> getBySenderAndMinimumAmountDescending(String sender, double amount) {
         List<Transaction> resultList = transactionMap.values().stream()
-                .filter(tr -> tr.getFrom().equals(sender))
-                .filter(tr -> tr.getAmount() >= amount)
+                .filter(tr -> tr.getFrom().equals(sender) && tr.getAmount() >= amount)
                 .sorted(Comparator.comparing(Transaction::getAmount).reversed())
                 .collect(Collectors.toList());
         if (resultList.size() == 0) {
@@ -134,9 +132,7 @@ public class ChainblockImpl implements Chainblock {
 
     public Iterable<Transaction> getByReceiverAndAmountRange(String receiver, double lo, double hi) {
         List<Transaction> resultList = transactionMap.values().stream()
-                .filter(tr -> tr.getTo().equals(receiver))
-                .filter(tr -> tr.getAmount() >= lo)
-                .filter(tr -> tr.getAmount() < hi)
+                .filter(tr -> tr.getTo().equals(receiver) && tr.getAmount() >= lo && tr.getAmount() < hi)
                 .sorted(Comparator.comparing(Transaction::getAmount).reversed().thenComparing(Transaction::getId))
                 .collect(Collectors.toList());
 
@@ -148,11 +144,11 @@ public class ChainblockImpl implements Chainblock {
 
     public Iterable<Transaction> getAllInAmountRange(double lo, double hi) {
         return transactionMap.values().stream()
-                .filter(tr -> tr.getAmount() >= lo)
-                .filter(tr -> tr.getAmount() <= hi)
+                .filter(tr -> tr.getAmount() >= lo && tr.getAmount() <= hi)
                 .collect(Collectors.toList());
     }
 
+    @Override
     public Iterator<Transaction> iterator() {
         return null;
     }
