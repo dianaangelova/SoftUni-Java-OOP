@@ -124,7 +124,7 @@ public class ChainblockImplTest {
     @Test
     public void test_GetByTransactionStatus_Success() {
         List<Transaction> expectedTransactions = transactions.stream()
-                .filter(t -> t.getStatus() == TransactionStatus.SUCCESSFUL)
+                .filter(t -> t.getStatus().equals(TransactionStatus.SUCCESSFUL))
                 .collect(Collectors.toList());
 
         fillDatabaseWithTransactions();
@@ -194,7 +194,7 @@ public class ChainblockImplTest {
     @Test
     public void test_GetBySenderOrderedByAmountDescendingSuccess() {
         List<Transaction> expectedList = transactions.stream()
-                .filter(tr -> tr.getFrom() == "Sasho")
+                .filter(tr -> tr.getFrom().equals("Sasho"))
                 .sorted(Comparator.comparing(Transaction::getAmount).reversed())
                 .collect(Collectors.toList());
 
@@ -215,7 +215,7 @@ public class ChainblockImplTest {
     @Test
     public void test_GetByReceiverOrderedByAmountThenByIdSuccess() {
         List<Transaction> expectedList = transactions.stream()
-                .filter(tr -> tr.getTo() == "Pesho")
+                .filter(tr -> tr.getTo().equals("Pesho"))
                 .sorted(Comparator.comparing(Transaction::getAmount).thenComparing(Transaction::getId))
                 .collect(Collectors.toList());
 
@@ -235,7 +235,7 @@ public class ChainblockImplTest {
     @Test
     public void test_GetByTransactionStatusAndMaximumAmount() {
         List<Transaction> expectedList = transactions.stream()
-                .filter(tr -> tr.getStatus() == TransactionStatus.SUCCESSFUL)
+                .filter(tr -> tr.getStatus().equals(TransactionStatus.SUCCESSFUL))
                 .filter(tr -> tr.getAmount() <= 10.0)
                 .sorted(Comparator.comparing(Transaction::getAmount).reversed())
                 .collect(Collectors.toList());
@@ -250,7 +250,7 @@ public class ChainblockImplTest {
     @Test
     public void test_GetBySenderAndMinimumAmountDescendingSuccess() {
         List<Transaction> expectedList = transactions.stream()
-                .filter(tr -> tr.getFrom() == "Pesho")
+                .filter(tr -> tr.getFrom().equals("Pesho"))
                 .filter(tr -> tr.getAmount() >= 5.0)
                 .sorted(Comparator.comparing(Transaction::getAmount).reversed())
                 .collect(Collectors.toList());
@@ -272,9 +272,37 @@ public class ChainblockImplTest {
         database.getByReceiverAndAmountRange("Milen", 10.0, 15.0);
     }
 
-    public void test_GetByReceiverAndAmountRangeFail() {
+    @Test
+    public void test_GetByReceiverAndAmountRangeSuccess() {
+        List<Transaction> expectedList = transactions.stream()
+                .filter(tr -> tr.getTo().equals("Sasho"))
+                .filter(tr -> tr.getAmount() >= 9.20)
+                .filter(tr -> tr.getAmount() < 12.20)
+                .sorted(Comparator.comparing(Transaction::getAmount).reversed().thenComparing(Transaction::getId))
+                .collect(Collectors.toList());
 
-        
-        database.getByReceiverAndAmountRange("Milen", 10.0, 15.0);
+        fillDatabaseWithTransactions();
+        Iterable<Transaction> actualResult = database.getByReceiverAndAmountRange("Sasho", 9.20, 12.20);
+
+         Assert.assertEquals(expectedList, actualResult);
     }
-}
+
+    @Test
+    public void test_GetAllInAmountRangeSuccess() {
+        List<Transaction> expectedList = transactions.stream()
+                .filter(tr -> tr.getAmount() >= 9.20)
+                .filter(tr -> tr.getAmount() <= 12.20)
+                .collect(Collectors.toList());
+
+        fillDatabaseWithTransactions();
+        Iterable<Transaction> actualResult = database.getAllInAmountRange(9.20, 12.20);
+
+        Assert.assertEquals(expectedList, actualResult);
+    }
+
+    @Test
+    public void test_IteratorSuccess(){
+        List<Transaction> transactions;
+    }
+
+    }
