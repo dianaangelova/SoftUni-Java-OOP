@@ -186,9 +186,8 @@ public class ChainblockImplTest {
 
         fillDatabaseWithTransactions();
         Iterable<Transaction> actualResult = database.getAllOrderedByAmountDescendingThenById();
-        List<Transaction> actualResultList = new ArrayList<>();
-        actualResult.forEach(actualResultList::add);
-        Assert.assertEquals(expected, actualResultList);
+
+        Assert.assertEquals(expected, actualResult);
     }
 
     @Test
@@ -200,15 +199,14 @@ public class ChainblockImplTest {
 
         fillDatabaseWithTransactions();
         Iterable<Transaction> actualResult = database.getBySenderOrderedByAmountDescending("Sasho");
-        List<Transaction> actualResultList = new ArrayList<>();
-        actualResult.forEach(actualResultList::add);
-        Assert.assertEquals(expectedList, actualResultList);
+
+        Assert.assertEquals(expectedList, actualResult);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void test_GetBySenderOrderedByAmountDescendingThrow() {
         fillDatabaseWithTransactions();
-        Iterable<Transaction> actualResult = database.getBySenderOrderedByAmountDescending("Koko");
+       database.getBySenderOrderedByAmountDescending("Koko");
     }
 
 
@@ -221,45 +219,40 @@ public class ChainblockImplTest {
 
         fillDatabaseWithTransactions();
         Iterable<Transaction> actualResult = database.getByReceiverOrderedByAmountThenById("Pesho");
-        List<Transaction> actualResultList = new ArrayList<>();
-        actualResult.forEach(actualResultList::add);
-        Assert.assertEquals(expectedList, actualResultList);
+
+        Assert.assertEquals(expectedList, actualResult);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void test_GetByReceiverOrderedByAmountThenByIdThrow() {
         fillDatabaseWithTransactions();
-        Iterable<Transaction> actualResult = database.getByReceiverOrderedByAmountThenById("Koko");
+        database.getByReceiverOrderedByAmountThenById("Koko");
     }
 
     @Test
     public void test_GetByTransactionStatusAndMaximumAmount() {
         List<Transaction> expectedList = transactions.stream()
-                .filter(tr -> tr.getStatus().equals(TransactionStatus.SUCCESSFUL))
-                .filter(tr -> tr.getAmount() <= 10.0)
+                .filter(tr -> tr.getStatus().equals(TransactionStatus.SUCCESSFUL) && tr.getAmount() <= 10.0)
                 .sorted(Comparator.comparing(Transaction::getAmount).reversed())
                 .collect(Collectors.toList());
 
         fillDatabaseWithTransactions();
         Iterable<Transaction> actualResult = database.getByTransactionStatusAndMaximumAmount(TransactionStatus.SUCCESSFUL, 10.0);
-        List<Transaction> actualResultList = new ArrayList<>();
-        actualResult.forEach(actualResultList::add);
-        Assert.assertEquals(expectedList, actualResultList);
+
+        Assert.assertEquals(expectedList, actualResult);
     }
 
     @Test
     public void test_GetBySenderAndMinimumAmountDescendingSuccess() {
         List<Transaction> expectedList = transactions.stream()
-                .filter(tr -> tr.getFrom().equals("Pesho"))
-                .filter(tr -> tr.getAmount() >= 5.0)
+                .filter(tr -> tr.getFrom().equals("Pesho") && tr.getAmount() >= 5.0)
                 .sorted(Comparator.comparing(Transaction::getAmount).reversed())
                 .collect(Collectors.toList());
 
         fillDatabaseWithTransactions();
         Iterable<Transaction> actualResult = database.getBySenderAndMinimumAmountDescending("Pesho", 5.0);
-        List<Transaction> actualResultList = new ArrayList<>();
-        actualResult.forEach(actualResultList::add);
-        Assert.assertEquals(expectedList, actualResultList);
+
+        Assert.assertEquals(expectedList, actualResult);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -275,23 +268,20 @@ public class ChainblockImplTest {
     @Test
     public void test_GetByReceiverAndAmountRangeSuccess() {
         List<Transaction> expectedList = transactions.stream()
-                .filter(tr -> tr.getTo().equals("Sasho"))
-                .filter(tr -> tr.getAmount() >= 9.20)
-                .filter(tr -> tr.getAmount() < 12.20)
+                .filter(tr -> tr.getTo().equals("Sasho") && tr.getAmount() >= 9.20 && tr.getAmount() < 12.20)
                 .sorted(Comparator.comparing(Transaction::getAmount).reversed().thenComparing(Transaction::getId))
                 .collect(Collectors.toList());
 
         fillDatabaseWithTransactions();
         Iterable<Transaction> actualResult = database.getByReceiverAndAmountRange("Sasho", 9.20, 12.20);
 
-         Assert.assertEquals(expectedList, actualResult);
+        Assert.assertEquals(expectedList, actualResult);
     }
 
     @Test
     public void test_GetAllInAmountRangeSuccess() {
         List<Transaction> expectedList = transactions.stream()
-                .filter(tr -> tr.getAmount() >= 9.20)
-                .filter(tr -> tr.getAmount() <= 12.20)
+                .filter(tr -> tr.getAmount() >= 9.20 && tr.getAmount() <= 12.20)
                 .collect(Collectors.toList());
 
         fillDatabaseWithTransactions();
@@ -301,8 +291,14 @@ public class ChainblockImplTest {
     }
 
     @Test
-    public void test_IteratorSuccess(){
-        List<Transaction> transactions;
-    }
+    public void test_GetAllInAmountRangeEmpty() {
+        List<Transaction> expectedList = transactions.stream()
+                .filter(tr -> tr.getAmount() >= 150 && tr.getAmount() <= 110000)
+                .collect(Collectors.toList());
 
+        fillDatabaseWithTransactions();
+        Iterable<Transaction> actualResult = database.getAllInAmountRange(150, 110000);
+
+        Assert.assertEquals(expectedList, actualResult);
     }
+}
