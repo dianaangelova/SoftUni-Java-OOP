@@ -75,7 +75,6 @@ public class HouseTests {
         house.addCat(cat2);
     }
 
-    //Remove is Test #6
     @Test(expected = IllegalArgumentException.class)
     public void test_RemoveCatThrow() {
         House house = new House("LongHouse", 2);
