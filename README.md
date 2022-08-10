@@ -1,1 +1,0 @@
-[![trophy](https://github-profile-trophy.vercel.app/?username=dianaangelova)](https://github.com/dianaangelova/github-profile-trophy)
