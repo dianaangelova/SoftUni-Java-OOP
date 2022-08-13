@@ -82,7 +82,6 @@ public class ControllerImpl implements Controller {
 
         StringBuilder sb = new StringBuilder();
         sb.append(String.format(PRESENT_DONE, presentName, text));
-        sb.append(" ");
         sb.append(String.format(COUNT_BROKEN_INSTRUMENTS, getBrokenInstrumentsCounter(helpersList)));
 
         return sb.toString();
