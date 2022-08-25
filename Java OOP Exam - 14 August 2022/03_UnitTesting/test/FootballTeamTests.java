@@ -1,4 +1,3 @@
-//test
 package football;
 
 import org.junit.Assert;
